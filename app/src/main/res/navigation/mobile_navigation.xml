@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_login">
+
+    <fragment
+        android:id="@+id/nav_work_order_overview"
+        android:name="be.ucll.electroman.activities.ui.home.WorkOrderOverviewFragment"
+        android:label="@string/menu_work_order_overview"
+        tools:layout="@layout/fragment_work_order_overview" >
+        <argument
+            android:name="loggedInUserName"
+            app:argType="string"
+            android:defaultValue=" " />
+        <action
+            android:id="@+id/new_work_order_action"
+            app:destination="@id/nav_new_work_order" />
+        <action
+            android:id="@+id/repair_detail_action"
+            app:destination="@id/nav_repair_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="be.ucll.electroman.activities.ui.login.LoginFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/login_successful_action"
+            app:destination="@id/nav_work_order_overview" />
+        <action
+            android:id="@+id/create_account_action"
+            app:destination="@id/nav_create_account" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_create_account"
+        android:name="be.ucll.electroman.activities.ui.account.CreateAccountFragment"
+        android:label="@string/menu_create_account"
+        tools:layout="@layout/fragment_create_account" />
+    <fragment
+        android:id="@+id/nav_new_work_order"
+        android:name="be.ucll.electroman.activities.ui.home.NewWorkOrderFragment"
+        android:label="fragment_new_work_order"
+        tools:layout="@layout/fragment_new_work_order" >
+        <argument
+            android:name="loggedInUserName"
+            app:argType="string"
+            android:defaultValue=" " />
+        <action
+            android:id="@+id/action_nav_new_work_order_to_nav_work_order_overview"
+            app:destination="@id/nav_work_order_overview" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_repair_detail"
+        android:name="be.ucll.electroman.activities.ui.home.RepairDetailFragment"
+        android:label="fragment_repair_detail"
+        tools:layout="@layout/fragment_repair_detail" >
+        <argument
+            android:name="workOrderId"
+            app:argType="long"
+            android:defaultValue="0L"/>
+        <action
+            android:id="@+id/nav_repair_detail_action_self"
+            app:destination="@id/nav_repair_detail" />
+        <argument
+            android:name="reOpened"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_nav_repair_detail_to_nav_work_order_overview"
+            app:destination="@id/nav_work_order_overview" />
+        <argument
+            android:name="loggedInUserName"
+            app:argType="string" />
+    </fragment>
+</navigation>
