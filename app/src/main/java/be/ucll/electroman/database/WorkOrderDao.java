@@ -8,7 +8,6 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import be.ucll.electroman.models.User;
 import be.ucll.electroman.models.WorkOrder;
 
 @Dao
@@ -21,6 +20,9 @@ public interface WorkOrderDao {
 
     @Query("SELECT * FROM work_order WHERE id LIKE :id")
     WorkOrder findById(long id);
+
+    @Query("SELECT * FROM work_order WHERE city LIKE :city AND device LIKE :device AND customer_name LIKE :customerName")
+    WorkOrder isWorkOrderExisting(String city, String device, String customerName);
 
     @Insert
     void insertAll(WorkOrder... workOrders);

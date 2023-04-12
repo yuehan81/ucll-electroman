@@ -10,6 +10,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="login_successful">Login successful. You\'ll now get your work orders list.</string>
     <string name="prompt_login_username">User Name</string>
     <string name="prompt_first_name">First Name</string>
     <string name="prompt_last_name">Last Name</string>
@@ -65,4 +66,5 @@
     <string name="nav_close">Close</string>
     <string name="menu_logout">Logout</string>
     <string name="action_logout">Logout</string>
+    <string name="username_exists_already">Username exists already!</string>
 </resources>

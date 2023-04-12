@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import be.ucll.electroman.database.ElectromanDatabase;
-
 @Entity(tableName = "work_order")
 public class WorkOrder {
     @PrimaryKey(autoGenerate = true)

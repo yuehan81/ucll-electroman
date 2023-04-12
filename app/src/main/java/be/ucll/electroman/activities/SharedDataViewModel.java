@@ -44,4 +44,7 @@ public class SharedDataViewModel extends ViewModel {
     public void setActionBarDrawerToggle(ActionBarDrawerToggle actionBarDrawerToggle) {
         this.actionBarDrawerToggle = actionBarDrawerToggle;
     }
+
+
+
 }

@@ -1,15 +1,16 @@
 package be.ucll.electroman.activities.ui.home;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,13 +18,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import be.ucll.electroman.R;
 import be.ucll.electroman.activities.SharedDataViewModel;
-import be.ucll.electroman.activities.ui.home.NewWorkOrderFragmentDirections;
 import be.ucll.electroman.databinding.FragmentNewWorkOrderBinding;
 import be.ucll.electroman.models.WorkOrder;
 
@@ -36,6 +35,7 @@ public class NewWorkOrderFragment extends Fragment {
     private NewWorkOrderViewModel mNewWorkOrderViewModel;
     private String loggedInUserName;
     private SharedDataViewModel sharedDataViewModel;
+    private View root;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,7 +55,7 @@ public class NewWorkOrderFragment extends Fragment {
         }
 
         binding = FragmentNewWorkOrderBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         return root;
     }
@@ -71,6 +71,11 @@ public class NewWorkOrderFragment extends Fragment {
         actionBar.setDisplayHomeAsUpEnabled(false);
         DrawerLayout drawerLayout = sharedDataViewModel.getDrawerLayout();
         drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+
+        // Hide the error message if no account creation issue was detected earlier
+        if (!mNewWorkOrderViewModel.isCreateWorkOrderError()) {
+            binding.newWorkOrderErrorMessage.setVisibility(View.GONE);
+        }
 
     }
 
@@ -105,11 +110,20 @@ public class NewWorkOrderFragment extends Fragment {
                 newWorkOrder.setCustomerName(binding.promptNewWorkOrderCustomerName.getText().toString());
                 newWorkOrder.setProblemCode(binding.promptNewWorkOrderProblemCode.getText().toString());
                 newWorkOrder.setUserId(mNewWorkOrderViewModel.getUserId(loggedInUserName));
-                // TODO Error handling. Check if Workorder already exists
-                mNewWorkOrderViewModel.insertWorkOrder(newWorkOrder);
-                Navigation.findNavController(getView()).navigate(action);
+                if (mNewWorkOrderViewModel.isWorkOrderExisting(newWorkOrder.getCity(), newWorkOrder.getDevice(), newWorkOrder.getCustomerName())) {
+                    binding.newWorkOrderErrorMessage.setVisibility(View.VISIBLE);
+                    binding.newWorkOrderErrorMessage.setText(String.format("Not saved: %s already added for %s", newWorkOrder.getDevice(), newWorkOrder.getCustomerName()));
+                    binding.newWorkOrderErrorMessage.setFocusable(true);
+                    mNewWorkOrderViewModel.setCreateWorkOrderError(true);
+                    closeKeyboard();
+
+                } else {
+                    mNewWorkOrderViewModel.insertWorkOrder(newWorkOrder);
+                    Navigation.findNavController(getView()).navigate(action);
+                }
 
                 return true;
+
                 // Cancel
             case MENU_CANCEL:
                 Log.i("NewWorkOrderFragment", "Menu item Cancel was clicked!!!");
@@ -124,6 +138,14 @@ public class NewWorkOrderFragment extends Fragment {
 
         }
 
+    }
+
+    private void closeKeyboard() {
+        InputMethodManager manager = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            manager = (InputMethodManager) root.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        }
+        manager.hideSoftInputFromWindow(root.getWindowToken(), 0);
     }
 
 }

@@ -4,15 +4,13 @@ package be.ucll.electroman.activities.ui.login;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -20,20 +18,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-
-import com.google.android.material.navigation.NavigationView;
 
 import be.ucll.electroman.R;
-import be.ucll.electroman.activities.MainActivity;
 import be.ucll.electroman.activities.SharedDataViewModel;
-import be.ucll.electroman.activities.ui.account.CreateAccountFragment;
 import be.ucll.electroman.databinding.FragmentLoginBinding;
 import be.ucll.electroman.models.User;
 
@@ -42,10 +32,14 @@ public class LoginFragment extends Fragment {
 
     private FragmentLoginBinding binding;
     private SharedDataViewModel sharedDataViewModel;
+    private final int WAIT_TIME = 3000;
+    private Handler uiHandler;
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        uiHandler = new Handler(); // anything posted to this handler will run on the UI Thread
 
         LoginViewModel loginViewModel =
                 new ViewModelProvider(this).get(LoginViewModel.class);
@@ -54,6 +48,10 @@ public class LoginFragment extends Fragment {
         // Hide the error message if no login error was detected
         if (!loginViewModel.isLoginIssue()) {
             binding.loginErrorMessage.setVisibility(View.GONE);
+        }
+        // Hide the login successful message if no successful login was detected
+        if (!loginViewModel.isLoginSuccessful()) {
+            binding.loginSuccessfulMessage.setVisibility(View.GONE);
         }
 
         root = binding.getRoot();
@@ -74,17 +72,45 @@ public class LoginFragment extends Fragment {
                     Log.i("LoginFragment", "Stored password in DB : " + user.getPassword());
                     if (binding.loginPassword.getText().toString().equals(user.getPassword())) {
                         // If login successful redirect to the next Fragment
-                        LoginFragmentDirections.LoginSuccessfulAction action = LoginFragmentDirections.loginSuccessfulAction();
-                        action.setLoggedInUserName(userName);
-                        Navigation.findNavController(view).navigate(action);
-                        return;
+                        // But first show a message for 3 seconds that the login was successful
+                        if (loginViewModel.isLoginIssue()) {
+                            binding.loginErrorMessage.setVisibility(View.GONE);
+                        }
+                        binding.loginSuccessfulMessage.setVisibility(View.VISIBLE);
+                        closeKeyboard();
+                        loginViewModel.setLoginSuccessful(true);
+
+
+                        Runnable onUi = () -> {
+                            // this will run on the main UI thread
+                            LoginFragmentDirections.LoginSuccessfulAction action = LoginFragmentDirections.loginSuccessfulAction();
+                            action.setLoggedInUserName(userName);
+                            Navigation.findNavController(view).navigate(action);
+                        };
+
+                        Runnable background = () -> {
+                            // This is the delay
+                            SystemClock.sleep( WAIT_TIME );
+                            // This will run on a background thread
+                            System.out.println("Going to WorkOrderOverviewFragment");
+                            uiHandler.post( onUi );
+                        };
+
+                        new Thread( background ).start();
+                    } else {
+                        // password was not correct. show error
+                        loginViewModel.setLoginIssue(true);
+                        binding.loginErrorMessage.setVisibility(View.VISIBLE);
+                        closeKeyboard();
                     }
+                } else {
+                    // user was not found. show error
+                    loginViewModel.setLoginIssue(true);
+                    binding.loginErrorMessage.setVisibility(View.VISIBLE);
+                    closeKeyboard();
                 }
 
-                // user was not found. show error
-                loginViewModel.setLoginIssue(true);
-                binding.loginErrorMessage.setVisibility(View.VISIBLE);
-                closeKeyboard();
+
 
 
             }
@@ -141,7 +167,7 @@ public class LoginFragment extends Fragment {
         binding = null;
     }
 
-    private void closeKeyboard()
+        private void closeKeyboard()
     {
         InputMethodManager manager = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {

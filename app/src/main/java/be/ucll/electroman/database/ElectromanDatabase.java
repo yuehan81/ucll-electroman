@@ -8,7 +8,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,8 +43,9 @@ public abstract class ElectromanDatabase extends RoomDatabase {
                                     Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
                                         @Override
                                         public void run() {
-                                            getDatabase(context).userDao().insert(Bootstrap.populateUser());
-                                            getDatabase(context).workOrderDao().insertAll(Bootstrap.populateWorkOrders());
+                                            getDatabase(context).userDao().insertAll(Bootstrap.populateUsers());
+                                            getDatabase(context).workOrderDao().insertAll(Bootstrap.populateWorkOrdersUser1());
+                                            getDatabase(context).workOrderDao().insertAll(Bootstrap.populateWorkOrdersUser2());
 
                                         }
                                     });

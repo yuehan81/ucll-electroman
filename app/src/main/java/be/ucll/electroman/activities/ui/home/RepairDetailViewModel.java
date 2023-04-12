@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.ViewModel;
 
 import be.ucll.electroman.models.WorkOrder;
 import be.ucll.electroman.repository.WorkOrderRepository;

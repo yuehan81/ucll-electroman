@@ -1,18 +1,15 @@
 package be.ucll.electroman.activities.ui.home;
 
 import android.app.Application;
-import android.widget.GridView;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
-import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import be.ucll.electroman.WorkOrderBaseAdapter;
 import be.ucll.electroman.models.User;
 import be.ucll.electroman.models.UserWithWorkOrders;
 import be.ucll.electroman.models.WorkOrder;

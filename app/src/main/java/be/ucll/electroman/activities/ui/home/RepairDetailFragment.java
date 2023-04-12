@@ -2,25 +2,11 @@ package be.ucll.electroman.activities.ui.home;
 
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
-import static android.content.Context.PEOPLE_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
 import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
-
+import android.content.res.Configuration;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -54,6 +50,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ActionBar actionBar;
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
 
     @Override
@@ -104,12 +101,20 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        sharedDataViewModel = new ViewModelProvider(requireActivity()).get(SharedDataViewModel.class);
-        NavigationView navigationView = sharedDataViewModel.getNavigationView();
-
         // Set drawer, actionBar and actionBarDrawerToggle from shared ViewModel with Main activity as instance variables
         setDrawerAndActionBar();
 
+        navigationView = sharedDataViewModel.getNavigationView();
+
+        createDrawerMenu(view, navigationView);
+
+        binding.repairInformation.setMovementMethod(new ScrollingMovementMethod());
+        binding.repairInformationReadonly.setMovementMethod(new ScrollingMovementMethod());
+
+
+    }
+
+    private void createDrawerMenu(@NonNull View view, NavigationView navigationView) {
         if (repairDetailViewModel.isReadonly()) {
             // Create Drawer menu
             navigationView.getMenu().clear();
@@ -123,7 +128,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()) {
                         case DRAWER_MENU_WORK_ORDER_OVERVIEW:
-                            be.ucll.electroman.activities.ui.home.RepairDetailFragmentDirections.ActionNavRepairDetailToNavWorkOrderOverview action = RepairDetailFragmentDirections.actionNavRepairDetailToNavWorkOrderOverview();
+                            be.ucll.electroman.activities.ui.home.RepairDetailFragmentDirections.ActionNavRepairDetailToNavWorkOrderOverview action = be.ucll.electroman.activities.ui.home.RepairDetailFragmentDirections.actionNavRepairDetailToNavWorkOrderOverview();
                             action.setLoggedInUserName(loggedInUserName);
                             Navigation.findNavController(view).navigate(action);
                             break;
@@ -141,8 +146,6 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
         } else {
             hideDrawer();
         }
-
-
     }
 
     private void hideDrawer() {
@@ -174,7 +177,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.clear();
+//        menu.clear();
         if (repairDetailViewModel.isReadonly()) {
             menu.add(0, MENU_REOPEN, Menu.NONE, getString(R.string.menu_action_reopen)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
@@ -277,6 +280,12 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
         return true;
     }
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        createDrawerMenu(root, navigationView);
+
+    }
 
     private void closeKeyboard() {
         InputMethodManager manager = null;

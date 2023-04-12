@@ -2,11 +2,10 @@ package be.ucll.electroman.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.time.LocalDate;
-
-@Entity
+@Entity(indices = {@Index(value = "user_name", unique = true)})
 public class User {
 
     @PrimaryKey(autoGenerate = true)

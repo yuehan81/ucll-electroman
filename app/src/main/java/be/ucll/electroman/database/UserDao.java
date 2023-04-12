@@ -1,8 +1,10 @@
 package be.ucll.electroman.database;
 
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -37,7 +39,7 @@ public interface UserDao {
     @Insert
     void insertAll(User... users);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     void insert(User user);
 
     @Delete

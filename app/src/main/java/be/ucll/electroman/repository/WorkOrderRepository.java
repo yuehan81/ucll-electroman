@@ -2,14 +2,10 @@ package be.ucll.electroman.repository;
 
 import android.app.Application;
 
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-
 import java.util.List;
 
 import be.ucll.electroman.database.ElectromanDatabase;
-import be.ucll.electroman.database.UserDao;
 import be.ucll.electroman.database.WorkOrderDao;
-import be.ucll.electroman.models.User;
 import be.ucll.electroman.models.WorkOrder;
 
 public class WorkOrderRepository {
@@ -38,6 +34,13 @@ public class WorkOrderRepository {
 
     public WorkOrder findByWorkOrderId(Long workOrderId) {
         return mWorkOrderDao.findById(workOrderId);
+    }
+
+    public boolean isWorkOrderExisting(String city, String device, String customerName) {
+        if (mWorkOrderDao.isWorkOrderExisting(city, device, customerName) != null) {
+            return true;
+        }
+        return false;
     }
 
     public void update(WorkOrder workOrder) {

@@ -5,10 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import be.ucll.electroman.bootstrap.Bootstrap;
-import be.ucll.electroman.database.WorkOrderDao;
 import be.ucll.electroman.models.User;
 import be.ucll.electroman.repository.UserRepository;
 import be.ucll.electroman.repository.WorkOrderRepository;
@@ -20,10 +17,12 @@ public class LoginViewModel extends AndroidViewModel {
     private final MutableLiveData<String> mErrorMessage;
 
     private boolean loginIssue;
+    private boolean loginSuccessful;
 
     public LoginViewModel(Application application) {
         super(application);
         loginIssue = false;
+        loginSuccessful = false;
         mUserRepository = new UserRepository(application);
         mWorkOrderRepository = new WorkOrderRepository(application);
         mErrorMessage = new MutableLiveData<>();
@@ -38,6 +37,14 @@ public class LoginViewModel extends AndroidViewModel {
 
     public void setLoginIssue(boolean loginIssue) {
         this.loginIssue = loginIssue;
+    }
+
+    public boolean isLoginSuccessful() {
+        return loginSuccessful;
+    }
+
+    public void setLoginSuccessful(boolean loginSuccesful) {
+        this.loginSuccessful = loginSuccesful;
     }
 
     public LiveData<String> getErrorMessage() {
