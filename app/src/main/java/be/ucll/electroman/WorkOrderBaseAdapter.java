@@ -9,6 +9,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.util.List;
 
@@ -59,6 +62,10 @@ public class WorkOrderBaseAdapter extends BaseAdapter {
         CheckBox processed = convertView.findViewById(R.id.work_order_grid_item_processed);
         processed.setChecked(workOrders.get(position).isProcessed());
         processed.setClickable(false);
+
+        if (workOrders.get(position).isProcessed()) {
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.teal_custom));
+        }
 
         return convertView;
 
