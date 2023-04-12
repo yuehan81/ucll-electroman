@@ -2,8 +2,13 @@ package be.ucll.electroman.activities.ui.home;
 
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.content.Context.PEOPLE_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
+import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +18,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -27,6 +33,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.google.android.material.navigation.NavigationView;
 
 import be.ucll.electroman.R;
+import be.ucll.electroman.activities.SharedDataViewModel;
 import be.ucll.electroman.databinding.FragmentRepairDetailBinding;
 
 public class RepairDetailFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,6 +42,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
     private static final int MENU_CANCEL = 2;
 
     private static final int MENU_REOPEN = 3;
+    private static final int DRAWER_MENU_WORK_ORDER_OVERVIEW = 1;
 
     private RepairDetailViewModel repairDetailViewModel;
     private FragmentRepairDetailBinding binding;
@@ -42,6 +50,10 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
     private Boolean reOpened;
     private View root;
     private String loggedInUserName;
+    private SharedDataViewModel sharedDataViewModel;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ActionBar actionBar;
+    private DrawerLayout drawerLayout;
 
 
     @Override
@@ -83,9 +95,73 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
         }
 
 
-
         root = binding.getRoot();
         return root;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        sharedDataViewModel = new ViewModelProvider(requireActivity()).get(SharedDataViewModel.class);
+        NavigationView navigationView = sharedDataViewModel.getNavigationView();
+
+        // Set drawer, actionBar and actionBarDrawerToggle from shared ViewModel with Main activity as instance variables
+        setDrawerAndActionBar();
+
+        if (repairDetailViewModel.isReadonly()) {
+            // Create Drawer menu
+            navigationView.getMenu().clear();
+            navigationView.getMenu().add(0, DRAWER_MENU_WORK_ORDER_OVERVIEW, Menu.NONE, getString(R.string.menu_work_order_overview));
+            navigationView.getMenu().getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_home_24dp));
+
+            showDrawer();
+
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case DRAWER_MENU_WORK_ORDER_OVERVIEW:
+                            be.ucll.electroman.activities.ui.home.RepairDetailFragmentDirections.ActionNavRepairDetailToNavWorkOrderOverview action = RepairDetailFragmentDirections.actionNavRepairDetailToNavWorkOrderOverview();
+                            action.setLoggedInUserName(loggedInUserName);
+                            Navigation.findNavController(view).navigate(action);
+                            break;
+
+                    }
+
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                    }
+
+                    return true;
+                }
+            });
+
+        } else {
+            hideDrawer();
+        }
+
+
+    }
+
+    private void hideDrawer() {
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    private void showDrawer() {
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    private void setDrawerAndActionBar() {
+        sharedDataViewModel = new ViewModelProvider(requireActivity()).get(SharedDataViewModel.class);
+        actionBarDrawerToggle = sharedDataViewModel.getActionBarDrawerToggle();
+        actionBar = sharedDataViewModel.getActionBar();
+        drawerLayout = sharedDataViewModel.getDrawerLayout();
     }
 
 
@@ -114,7 +190,6 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
     public boolean onOptionsItemSelected(MenuItem item) {
 
 
-
         switch (item.getItemId()) {
             // Save
             case MENU_SAVE:
@@ -134,7 +209,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
                     repairDetailViewModel.updateWorkOrder(true);
                     // check if this repair detail was reopened. If yes go back to repair detail in readonly mode
                     // If it was not reopened we go back to the WorkOrderOverview fragment
-                    if (reOpened){
+                    if (reOpened) {
                         RepairDetailFragmentDirections.NavRepairDetailActionSelf actionSelf = RepairDetailFragmentDirections.navRepairDetailActionSelf(loggedInUserName);
                         actionSelf.setReOpened(false);
                         actionSelf.setWorkOrderId(repairDetailViewModel.getWorkOrderId());
@@ -147,13 +222,13 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
                     }
                 }
                 return true;
-                // Cancel
+            // Cancel
             case MENU_CANCEL:
                 Log.i("RepairDetailFragment", "Menu item Cancel was clicked!!!");
                 binding.repairInformationSaveError.setVisibility(View.INVISIBLE);
                 // check if this repair detail was reopened. If yes go back to repair detail in readonly mode
                 // If it was not reopened we go back to the WorkOrderOverview fragment
-                if (reOpened){
+                if (reOpened) {
                     repairDetailViewModel.updateWorkOrder(true);
                     RepairDetailFragmentDirections.NavRepairDetailActionSelf actionSelf = RepairDetailFragmentDirections.navRepairDetailActionSelf(loggedInUserName);
                     actionSelf.setReOpened(false);
@@ -203,8 +278,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
     }
 
 
-    private void closeKeyboard()
-    {
+    private void closeKeyboard() {
         InputMethodManager manager = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             manager = (InputMethodManager) root.getContext().getSystemService(INPUT_METHOD_SERVICE);

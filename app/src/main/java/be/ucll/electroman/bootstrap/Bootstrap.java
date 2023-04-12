@@ -21,10 +21,10 @@ public class Bootstrap {
         User user = new User();
         user.setFirstName("Johan");
         user.setLastName("Sermon");
-        user.setMunicipality("Tienen");
-        user.setPostalCode("3300");
-        user.setStreet("Papenkelderstraat");
-        user.setHouseNumber("29");
+        user.setMunicipality("Leuven");
+        user.setPostalCode("3000");
+        user.setStreet("Hondzochtstraat");
+        user.setHouseNumber("48");
         user.setUsername("js");
         user.setPassword("js");
         userRepository.insert(user);
@@ -49,10 +49,10 @@ public class Bootstrap {
         User user = new User();
         user.setFirstName("Johan");
         user.setLastName("Sermon");
-        user.setMunicipality("Tienen");
-        user.setPostalCode("3300");
-        user.setStreet("Papenkelderstraat");
-        user.setHouseNumber("29");
+        user.setMunicipality("Leuven");
+        user.setPostalCode("3000");
+        user.setStreet("Hondzochtstraat");
+        user.setHouseNumber("48");
         user.setUsername("js");
         user.setPassword("js");
 

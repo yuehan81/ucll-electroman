@@ -1,5 +1,8 @@
 package be.ucll.electroman.activities.ui.home;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -18,9 +22,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -35,6 +42,7 @@ import java.util.List;
 import be.ucll.electroman.R;
 import be.ucll.electroman.WorkOrderBaseAdapter;
 import be.ucll.electroman.activities.MainActivity;
+import be.ucll.electroman.activities.SharedDataViewModel;
 import be.ucll.electroman.activities.ui.home.WorkOrderOverviewFragmentDirections;
 import be.ucll.electroman.activities.ui.login.LoginFragmentDirections;
 import be.ucll.electroman.databinding.FragmentWorkOrderOverviewBinding;
@@ -42,10 +50,10 @@ import be.ucll.electroman.models.WorkOrder;
 import be.ucll.electroman.repository.UserRepository;
 import be.ucll.electroman.repository.WorkOrderRepository;
 
-public class WorkOrderOverviewFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
+public class WorkOrderOverviewFragment extends Fragment {
 
     private static final int ACTION_NEW = 1;
-    private static final int ACTION_LOGOUT = 2;
+    private static final int DRAWER_MENU_LOGOUT = 1;
     private FragmentWorkOrderOverviewBinding binding;
     private WorkOrderOverviewViewModel workOrderOverviewViewModel;
 
@@ -57,6 +65,11 @@ public class WorkOrderOverviewFragment extends Fragment implements NavigationVie
     private NavController navController;
     private NavigationView navigationView;
     private View root;
+
+    private SharedDataViewModel sharedDataViewModel;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ActionBar actionBar;
+    private DrawerLayout drawerLayout;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -123,9 +136,39 @@ public class WorkOrderOverviewFragment extends Fragment implements NavigationVie
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         navController = Navigation.findNavController(view);
-//        navigationView = root.findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
-//        navigationView.bringToFront();
+        closeKeyboard();
+
+        // Set drawer, actionBar and actionBarDrawerToggle from shared ViewModel with Main activity as instance variables
+        setDrawerAndActionBar();
+
+        sharedDataViewModel = new ViewModelProvider(requireActivity()).get(SharedDataViewModel.class);
+        NavigationView navigationView = sharedDataViewModel.getNavigationView();
+
+        // Create Drawer menu
+        if (navigationView != null) {
+            navigationView.getMenu().clear();
+            navigationView.getMenu().add(0, DRAWER_MENU_LOGOUT, Menu.NONE, getString(R.string.menu_logout));
+            navigationView.getMenu().getItem(0).setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.ic_logout_24dp));
+
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case DRAWER_MENU_LOGOUT:
+                            navController.navigate(R.id.nav_login);
+                            break;
+
+                    }
+
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                    }
+
+                    return true;
+                }
+            });
+        }
+
     }
 
     @Override
@@ -138,12 +181,12 @@ public class WorkOrderOverviewFragment extends Fragment implements NavigationVie
     public void onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         menu.add(0, ACTION_NEW, Menu.NONE, getString(R.string.action_new_work_order)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(0, ACTION_LOGOUT, Menu.NONE, getString(R.string.action_logout)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
 
         switch (item.getItemId()) {
             case ACTION_NEW:
@@ -151,28 +194,28 @@ public class WorkOrderOverviewFragment extends Fragment implements NavigationVie
                 action.setLoggedInUserName(loggedInUserName);
                 Navigation.findNavController(getView()).navigate(action);
                 break;
-            case ACTION_LOGOUT:
-                Log.i("WorkOrderOverviewFragment", "Logout clicked in toolbar menu");
-                navController.navigate(R.id.nav_login);
-                break;
+
         }
-        return true;
+//        return true;
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_work_order_overview:
-                navController.navigate(R.id.nav_work_order_overview);
-                break;
-            case R.id.nav_login:
-                Log.i("MainActivity", "Logout clicked in drawer menu");
-                navController.navigate(R.id.nav_login);
-                break;
-        }
-
-        return true;
+    private void setDrawerAndActionBar() {
+        sharedDataViewModel = new ViewModelProvider(requireActivity()).get(SharedDataViewModel.class);
+        actionBarDrawerToggle = sharedDataViewModel.getActionBarDrawerToggle();
+        actionBar = sharedDataViewModel.getActionBar();
+        drawerLayout = sharedDataViewModel.getDrawerLayout();
     }
+
+    private void closeKeyboard()
+    {
+        InputMethodManager manager = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            manager = (InputMethodManager) root.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        }
+        manager.hideSoftInputFromWindow(root.getWindowToken(), 0);
+    }
+
 
 
 }

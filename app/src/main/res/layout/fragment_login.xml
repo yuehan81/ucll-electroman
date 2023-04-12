@@ -31,6 +31,8 @@
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:selectAllOnFocus="true"
+        android:focusedByDefault="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintBottom_toTopOf="@+id/login_password"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintHorizontal_bias="0.0"

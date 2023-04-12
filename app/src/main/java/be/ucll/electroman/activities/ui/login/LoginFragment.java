@@ -1,26 +1,38 @@
 package be.ucll.electroman.activities.ui.login;
 
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.navigation.NavigationView;
+
 import be.ucll.electroman.R;
+import be.ucll.electroman.activities.MainActivity;
+import be.ucll.electroman.activities.SharedDataViewModel;
 import be.ucll.electroman.activities.ui.account.CreateAccountFragment;
 import be.ucll.electroman.databinding.FragmentLoginBinding;
 import be.ucll.electroman.models.User;
@@ -29,6 +41,8 @@ import be.ucll.electroman.models.User;
 public class LoginFragment extends Fragment {
 
     private FragmentLoginBinding binding;
+    private SharedDataViewModel sharedDataViewModel;
+    private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +56,7 @@ public class LoginFragment extends Fragment {
             binding.loginErrorMessage.setVisibility(View.GONE);
         }
 
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         final TextView textView = binding.loginErrorMessage;
         loginViewModel.getErrorMessage().observe(getViewLifecycleOwner(), textView::setText);
@@ -70,6 +84,7 @@ public class LoginFragment extends Fragment {
                 // user was not found. show error
                 loginViewModel.setLoginIssue(true);
                 binding.loginErrorMessage.setVisibility(View.VISIBLE);
+                closeKeyboard();
 
 
             }
@@ -95,7 +110,18 @@ public class LoginFragment extends Fragment {
             }
         });
 
+        // Set focus on username field
+        binding.loginUsername.setFocusable(true);
+        binding.loginUsername.requestFocus();
+
+
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -115,6 +141,14 @@ public class LoginFragment extends Fragment {
         binding = null;
     }
 
+    private void closeKeyboard()
+    {
+        InputMethodManager manager = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            manager = (InputMethodManager) root.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        }
+        manager.hideSoftInputFromWindow(root.getWindowToken(), 0);
+    }
 
 
 

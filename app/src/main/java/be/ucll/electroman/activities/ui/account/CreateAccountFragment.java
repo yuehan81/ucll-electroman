@@ -3,6 +3,7 @@ package be.ucll.electroman.activities.ui.account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -50,22 +51,13 @@ public class CreateAccountFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.nav_login);
 
 
-//                // get data
-//                String registeredUsername = binding.registerUsername.getText().toString();
-//                String registeredUserPassword = binding.registerPassword.getText().toString();
-//                //put data to intent so the Login Activity has immediately the user and password filled in
-//                Intent intent = new Intent();
-//                intent.putExtra("username", registeredUsername);
-//                intent.putExtra("password", registeredUserPassword);
-//                setResult(RESULT_OK, intent);
-//                //finishing activity
-//                finish();
             }
         });
 
 
         return root;
     }
+
 
     @Override
     public void onDestroyView() {
