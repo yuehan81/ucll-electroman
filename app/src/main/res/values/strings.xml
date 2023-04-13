@@ -67,4 +67,6 @@
     <string name="menu_logout">Logout</string>
     <string name="action_logout">Logout</string>
     <string name="username_exists_already">Username exists already!</string>
+    <string name="username_and_password_cannot_be_blank">Username and password cannot be blank!</string>
+    <string name="prompt_new_work_order_problem_description">Problem Description</string>
 </resources>

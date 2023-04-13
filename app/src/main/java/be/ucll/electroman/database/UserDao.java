@@ -39,8 +39,8 @@ public interface UserDao {
     @Insert
     void insertAll(User... users);
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    void insert(User user);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insert(User user);
 
     @Delete
     void delete(User user);

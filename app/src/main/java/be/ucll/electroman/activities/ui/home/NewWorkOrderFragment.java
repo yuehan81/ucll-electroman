@@ -104,11 +104,17 @@ public class NewWorkOrderFragment extends Fragment {
             case MENU_SAVE:
                 // Save new work order
                 Log.i("NewWorkOrderFragment", "Menu item Save was clicked!!!");
+                String city = binding.promptNewWorkOrderCity.getText().toString().trim();
+                String device = binding.promptNewWorkOrderDevice.getText().toString().trim();
+                String customerName = binding.promptNewWorkOrderCustomerName.getText().toString().trim();
+                String problemCode = binding.promptNewWorkOrderProblemCode.getText().toString().trim();
+                String problemDescription = binding.promptNewWorkOrderProblemDescription.getText().toString().trim();
                 WorkOrder newWorkOrder = new WorkOrder();
-                newWorkOrder.setCity(binding.promptNewWorkOrderCity.getText().toString());
-                newWorkOrder.setDevice(binding.promptNewWorkOrderDevice.getText().toString());
-                newWorkOrder.setCustomerName(binding.promptNewWorkOrderCustomerName.getText().toString());
-                newWorkOrder.setProblemCode(binding.promptNewWorkOrderProblemCode.getText().toString());
+                newWorkOrder.setCity(city);
+                newWorkOrder.setDevice(device);
+                newWorkOrder.setCustomerName(customerName);
+                newWorkOrder.setProblemCode(problemCode);
+                newWorkOrder.setDetailedProblemDescription(problemDescription);
                 newWorkOrder.setUserId(mNewWorkOrderViewModel.getUserId(loggedInUserName));
                 if (mNewWorkOrderViewModel.isWorkOrderExisting(newWorkOrder.getCity(), newWorkOrder.getDevice(), newWorkOrder.getCustomerName())) {
                     binding.newWorkOrderErrorMessage.setVisibility(View.VISIBLE);
@@ -117,14 +123,22 @@ public class NewWorkOrderFragment extends Fragment {
                     mNewWorkOrderViewModel.setCreateWorkOrderError(true);
                     closeKeyboard();
 
+                } else if (city.isEmpty() || device.isEmpty() || customerName.isEmpty() || problemCode.isEmpty() || problemDescription.isEmpty()) {
+                    binding.newWorkOrderErrorMessage.setVisibility(View.VISIBLE);
+                    binding.newWorkOrderErrorMessage.setText("Not saved: All fields have to be filled in!");
+                    binding.newWorkOrderErrorMessage.setFocusable(true);
+                    mNewWorkOrderViewModel.setCreateWorkOrderError(true);
+                    closeKeyboard();
                 } else {
                     mNewWorkOrderViewModel.insertWorkOrder(newWorkOrder);
+                    mNewWorkOrderViewModel.setCreateWorkOrderError(false);
                     Navigation.findNavController(getView()).navigate(action);
                 }
 
+
                 return true;
 
-                // Cancel
+            // Cancel
             case MENU_CANCEL:
                 Log.i("NewWorkOrderFragment", "Menu item Cancel was clicked!!!");
                 Navigation.findNavController(getView()).navigate(action);

@@ -69,11 +69,29 @@
         android:layout_marginTop="5dp"
         android:autofillHints="@string/prompt_new_work_order_customer_name"
         android:hint="@string/prompt_new_work_order_customer_name"
-        android:imeOptions="actionDone"
         android:inputType="text"
         android:minHeight="48dp"
         android:selectAllOnFocus="true"
         app:layout_constraintTop_toBottomOf="@+id/prompt_new_work_order_problem_code"
+        app:layout_constraintBottom_toTopOf="@+id/prompt_new_work_order_problem_description"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <EditText
+        android:id="@+id/prompt_new_work_order_problem_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:autofillHints="@string/prompt_new_work_order_problem_description"
+        android:hint="@string/prompt_new_work_order_problem_description"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:imeOptions="actionDone"
+        android:selectAllOnFocus="true"
+        app:layout_constraintTop_toBottomOf="@+id/prompt_new_work_order_customer_name"
         app:layout_constraintBottom_toTopOf="@+id/new_work_order_error_message"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -94,7 +112,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/prompt_new_work_order_customer_name" />
+        app:layout_constraintTop_toBottomOf="@+id/prompt_new_work_order_problem_description" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -110,6 +128,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.90" />
+
 
 
 

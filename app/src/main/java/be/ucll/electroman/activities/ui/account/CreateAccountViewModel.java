@@ -27,8 +27,10 @@ public class CreateAccountViewModel extends AndroidViewModel {
         this.createAccountError = createAccountError;
     }
 
-    public void createAccount(User user) {
-            mUserRepository.insert(user);
+    public long createAccount(User user) {
+
+        return mUserRepository.insert(user);
+
     }
 
     public boolean isExistingUserName(String userName) {

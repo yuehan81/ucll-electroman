@@ -1,5 +1,6 @@
 package be.ucll.electroman.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
@@ -25,6 +26,7 @@ public class User {
     private String box;
     @ColumnInfo(name = "user_name")
     private String username;
+
     private String password;
 
     public long getUid() {
@@ -103,6 +105,7 @@ public class User {
         return username;
     }
 
+    @NonNull
     public void setUsername(String username) {
         this.username = username;
     }
@@ -111,6 +114,7 @@ public class User {
         return password;
     }
 
+    @NonNull
     public void setPassword(String password) {
         this.password = password;
     }

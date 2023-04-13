@@ -6,6 +6,7 @@ import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +59,6 @@ public class CreateAccountFragment extends Fragment {
         }
 
 
-
-
         binding.createAccount2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +77,17 @@ public class CreateAccountFragment extends Fragment {
                 boolean isExistingUser = mCreateAccountViewModel.isExistingUserName(user.getUsername());
 
                 if (isExistingUser) {
+                    binding.createAccountErrorMessage.setText(getResources().getString(R.string.username_exists_already));
+                    binding.createAccountErrorMessage.setVisibility(View.VISIBLE);
+                    binding.createAccountErrorMessage.setFocusable(true);
+                    closeKeyboard();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        binding.createAccountScrollView.scrollToDescendant(binding.createAccountErrorMessage);
+                    }
+                    mCreateAccountViewModel.setCreateAccountError(true);
+                } else if (binding.registerUsername.getText().toString().trim().isEmpty() || binding.registerPassword.getText().toString().isEmpty()) {
+                    // Username and password are required
+                    binding.createAccountErrorMessage.setText(getResources().getString(R.string.username_and_password_cannot_be_blank));
                     binding.createAccountErrorMessage.setVisibility(View.VISIBLE);
                     binding.createAccountErrorMessage.setFocusable(true);
                     closeKeyboard();
@@ -86,11 +96,11 @@ public class CreateAccountFragment extends Fragment {
                     }
                     mCreateAccountViewModel.setCreateAccountError(true);
                 } else {
-                    mCreateAccountViewModel.createAccount(user);
-
+                    long result = mCreateAccountViewModel.createAccount(user);
+                    Log.i("CreateAccountFragment", "Account creation status: " + String.valueOf(result));
+                    mCreateAccountViewModel.setCreateAccountError(false);
                     Navigation.findNavController(view).navigate(R.id.nav_login);
                 }
-
 
 
             }
@@ -107,6 +117,7 @@ public class CreateAccountFragment extends Fragment {
 //        hideDrawer();
 
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -126,6 +137,7 @@ public class CreateAccountFragment extends Fragment {
         actionBar = sharedDataViewModel.getActionBar();
         drawerLayout = sharedDataViewModel.getDrawerLayout();
     }
+
     private void closeKeyboard() {
         InputMethodManager manager = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {

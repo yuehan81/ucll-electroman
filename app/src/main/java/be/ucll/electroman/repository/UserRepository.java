@@ -15,8 +15,8 @@ public class UserRepository {
         mUserDao = db.userDao();
     }
 
-    public void insert(User user) {
-            mUserDao.insert(user);
+    public long insert(User user) {
+            return mUserDao.insert(user);
 
     }
 
