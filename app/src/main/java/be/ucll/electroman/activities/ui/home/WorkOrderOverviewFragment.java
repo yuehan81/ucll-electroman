@@ -95,6 +95,7 @@ public class WorkOrderOverviewFragment extends Fragment {
 
         // Fill the work order GridView
         workOrderGridView = root.findViewById(R.id.work_order_grid);
+
         List<WorkOrder> workOrders = workOrderOverviewViewModel.getUserWithWorkOrders(loggedInUserName).getWorkOrders();
         if (workOrderOverviewViewModel.getWorkOrders().isEmpty()) {
             workOrderOverviewViewModel.addWorkOrders(workOrders);

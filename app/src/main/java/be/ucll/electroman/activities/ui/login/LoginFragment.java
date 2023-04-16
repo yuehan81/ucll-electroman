@@ -34,6 +34,7 @@ public class LoginFragment extends Fragment {
     private SharedDataViewModel sharedDataViewModel;
     private final int WAIT_TIME = 3000;
     private Handler uiHandler;
+    public LoginViewModel loginViewModel;
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,7 +42,7 @@ public class LoginFragment extends Fragment {
 
         uiHandler = new Handler(); // anything posted to this handler will run on the UI Thread
 
-        LoginViewModel loginViewModel =
+        loginViewModel =
                 new ViewModelProvider(this).get(LoginViewModel.class);
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
@@ -59,6 +60,37 @@ public class LoginFragment extends Fragment {
         final TextView textView = binding.loginErrorMessage;
         loginViewModel.getErrorMessage().observe(getViewLifecycleOwner(), textView::setText);
 
+
+        binding.loginPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    binding.loginButton.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+        binding.createAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.nav_create_account);
+            }
+        });
+
+        // Set focus on username field
+        binding.loginUsername.setFocusable(true);
+        binding.loginUsername.requestFocus();
+
+
+        return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         View.OnClickListener loginOnClickListener = new View.OnClickListener() {
             @Override
@@ -117,36 +149,7 @@ public class LoginFragment extends Fragment {
         };
 
         binding.loginButton.setOnClickListener(loginOnClickListener);
-        binding.loginPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    binding.loginButton.performClick();
-                    return true;
-                }
-                return false;
-            }
-        });
 
-
-        binding.createAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.nav_create_account);
-            }
-        });
-
-        // Set focus on username field
-        binding.loginUsername.setFocusable(true);
-        binding.loginUsername.requestFocus();
-
-
-        return root;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
     }
 

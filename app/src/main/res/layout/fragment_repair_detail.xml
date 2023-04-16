@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.ui.home.RepairDetailFragment">
 
+
     <TextView
         android:id="@+id/detailed_problem_description_title"
         style="@style/h1"
@@ -25,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,48 +48,52 @@
 
         <EditText
             android:id="@+id/repair_information"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:scrollIndicators="top|start"
             app:layout_constraintHeight_max="wrap"
             android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
-            android:gravity="top|left"
-            android:hint="@string/repair_information_title"
+            android:gravity="top|start"
+            android:hint="@string/hint_repair_information"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
-            android:lines="10"
-            android:maxLines="15"
-            android:minLines="5"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
-            android:text="@string/repair_information_title"
-            app:layout_constraintBottom_toTopOf="@id/repair_information_save_error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/repair_information_title"/>
-
-
-
-        <TextView
-            android:id="@+id/repair_information_readonly"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scrollbars="vertical"
-            app:layout_constraintHeight_max="wrap"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="top|left"
             android:text=""
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:visibility="invisible"
+            android:scrollbarSize="10dp"
             app:layout_constraintBottom_toTopOf="@id/repair_information_save_error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/repair_information_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/repair_information_title"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+    <TextView
+        android:id="@+id/repair_information_readonly"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="top|start"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:fadeScrollbars="false"
+        android:scrollIndicators="top|start"
+        android:scrollbars="vertical"
+        android:text=""
+        android:scrollbarSize="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/repair_information_save_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="wrap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repair_information_title"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 

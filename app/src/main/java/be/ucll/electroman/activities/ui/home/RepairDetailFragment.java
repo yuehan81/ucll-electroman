@@ -5,15 +5,20 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 import static androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 
 import android.content.res.Configuration;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +34,7 @@ import androidx.navigation.Navigation;
 import com.google.android.material.navigation.NavigationView;
 
 import be.ucll.electroman.R;
+import be.ucll.electroman.activities.MainActivity;
 import be.ucll.electroman.activities.SharedDataViewModel;
 import be.ucll.electroman.databinding.FragmentRepairDetailBinding;
 
@@ -86,13 +92,35 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
         if (repairDetailViewModel.isReadonly()) {
             binding.repairInformation.setVisibility(View.INVISIBLE);
             binding.repairInformationReadonly.setVisibility(View.VISIBLE);
+            binding.repairInformationTitle.setText(R.string.repair_information_title);
             binding.repairInformationReadonly.setText(repairDetailViewModel.getRepairInformation());
         } else {
+            binding.repairInformationTitle.setText(R.string.repair_information_title_editable);
             binding.repairInformation.setText(repairDetailViewModel.getRepairInformation());
         }
 
 
         root = binding.getRoot();
+
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new  ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                root.getWindowVisibleDisplayFrame(r);
+                int screenHeight = root.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+                if (keypadHeight > screenHeight * 0.15) {
+                    //Toast.makeText(getContext(),"Keyboard is showing",Toast.LENGTH_LONG).show();
+                } else {
+                    //Toast.makeText(getContext(),"keyboard closed",Toast.LENGTH_LONG).show();
+                    // redraw the Repair information view to use max height of the screen again
+                    root.findViewById(R.id.repair_information).forceLayout();
+                    root.requestLayout();
+                    root.findViewById(R.id.repair_information).scrollTo(0,0);
+                }
+            }
+        });
+
         return root;
     }
 
@@ -287,6 +315,7 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
 
     }
 
+
     private void closeKeyboard() {
         InputMethodManager manager = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -294,4 +323,6 @@ public class RepairDetailFragment extends Fragment implements NavigationView.OnN
         }
         manager.hideSoftInputFromWindow(root.getWindowToken(), 0);
     }
+
+
 }

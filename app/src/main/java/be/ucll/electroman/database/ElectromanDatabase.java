@@ -6,10 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import be.ucll.electroman.bootstrap.Bootstrap;
 import be.ucll.electroman.models.User;
@@ -17,6 +20,7 @@ import be.ucll.electroman.models.WorkOrder;
 
 
 @Database(entities = {User.class, WorkOrder.class}, version = 1, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class ElectromanDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract WorkOrderDao workOrderDao();
@@ -40,7 +44,7 @@ public abstract class ElectromanDatabase extends RoomDatabase {
                                 @Override
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
-                                    Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
+                                    Executors.newSingleThreadScheduledExecutor().submit(new Runnable() {
                                         @Override
                                         public void run() {
                                             getDatabase(context).userDao().insertAll(Bootstrap.populateUsers());
@@ -52,6 +56,8 @@ public abstract class ElectromanDatabase extends RoomDatabase {
                                 }
                             })
                             .build();
+
+                    INSTANCE.query("select 1", null);
 
 
 

@@ -8,9 +8,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -19,8 +23,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+
+import java.sql.Date;
+import java.time.LocalDate;
 
 import be.ucll.electroman.R;
 import be.ucll.electroman.activities.SharedDataViewModel;
@@ -44,8 +52,11 @@ public class CreateAccountFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        setHasOptionsMenu(true);
         setDrawerAndActionBar();
         hideDrawer();
+        actionBar.setTitle("You can scroll this window");
+        actionBar.setDisplayShowTitleEnabled(true);
 
         binding = FragmentCreateAccountBinding.inflate(inflater, container, false);
         root = binding.getRoot();
@@ -66,7 +77,10 @@ public class CreateAccountFragment extends Fragment {
                 User user = new User();
                 user.setFirstName(binding.firstName.getText().toString().trim());
                 user.setLastName(binding.lastName.getText().toString().trim());
-                user.setDateOfBirth(binding.dateOfBirth.getText().toString().trim());
+                int day = binding.dateOfBirth.getDayOfMonth();
+                int month = binding.dateOfBirth.getMonth();
+                int year = binding.dateOfBirth.getYear();
+                user.setDateOfBirth(Date.valueOf(LocalDate.of(year, month, day).toString()));
                 user.setMunicipality(binding.municipality.getText().toString().trim());
                 user.setPostalCode(binding.postalCode.getText().toString().trim());
                 user.setHouseNumber(binding.houseNumber.getText().toString().trim());
@@ -95,10 +109,22 @@ public class CreateAccountFragment extends Fragment {
                         binding.createAccountScrollView.scrollToDescendant(binding.createAccountErrorMessage);
                     }
                     mCreateAccountViewModel.setCreateAccountError(true);
+                } else if (!binding.termsAndConditions.isChecked()) {
+                    binding.createAccountErrorMessage.setText(getResources().getString(R.string.terms_and_conditions_need_to_be_checked));
+                    binding.createAccountErrorMessage.setVisibility(View.VISIBLE);
+                    binding.createAccountErrorMessage.setFocusable(true);
+                    closeKeyboard();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        binding.createAccountScrollView.scrollToDescendant(binding.createAccountErrorMessage);
+                    }
+                    mCreateAccountViewModel.setCreateAccountError(true);
                 } else {
                     long result = mCreateAccountViewModel.createAccount(user);
                     Log.i("CreateAccountFragment", "Account creation status: " + String.valueOf(result));
+                    Log.i("CreateAccountFragment", user.getDateOfBirth().toString());
+                    Log.i("CreateAccountFragment", mCreateAccountViewModel.findByUsername(user.getUsername()).getDateOfBirth().toString());
                     mCreateAccountViewModel.setCreateAccountError(false);
+                    actionBar.setDisplayShowTitleEnabled(true);
                     Navigation.findNavController(view).navigate(R.id.nav_login);
                 }
 
@@ -106,10 +132,35 @@ public class CreateAccountFragment extends Fragment {
             }
         });
 
+        DatePicker datePicker = (DatePicker) root.findViewById(R.id.date_of_birth);
+        binding.createAccountScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+
+            @Override
+            public void onScrollChanged() {
+                requestDisallowParentInterceptTouchEvent(datePicker, true);
+            }
+        });
+
 
         return root;
     }
 
+
+    private void requestDisallowParentInterceptTouchEvent(View v, Boolean disallowIntercept) {
+        while (v.getParent() != null && v.getParent() instanceof View) {
+            if (v.getParent() instanceof ScrollView) {
+                v.getParent().requestDisallowInterceptTouchEvent(disallowIntercept);
+            }
+            v = (View) v.getParent();
+        }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        actionBar.setDisplayShowTitleEnabled(false);
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
@@ -123,7 +174,6 @@ public class CreateAccountFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
 
     private void hideDrawer() {
         actionBarDrawerToggle.setDrawerIndicatorEnabled(false);

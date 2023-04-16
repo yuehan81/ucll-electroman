@@ -33,6 +33,10 @@ public class CreateAccountViewModel extends AndroidViewModel {
 
     }
 
+    public User findByUsername(String userName) {
+        return mUserRepository.findByUserName(userName);
+    }
+
     public boolean isExistingUserName(String userName) {
         if (mUserRepository.findByUserName(userName) != null) {
             return true;

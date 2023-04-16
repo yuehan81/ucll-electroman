@@ -141,4 +141,8 @@ public class MainActivity extends AppCompatActivity {
     public NavigationView getNavigationView() {
         return navigationView;
     }
+
+
+
+
 }

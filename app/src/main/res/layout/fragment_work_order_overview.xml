@@ -16,9 +16,77 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/header_city"
+        style="@style/h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_city"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toTopOf="@id/work_order_grid"
+        app:layout_constraintEnd_toStartOf="@+id/header_device"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome" />
+
+    <TextView
+        android:id="@+id/header_device"
+        style="@style/h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_device"
+        app:layout_constraintStart_toEndOf="@+id/header_city"
+        app:layout_constraintEnd_toStartOf="@id/header_problem_code"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome"
+        app:layout_constraintBottom_toTopOf="@id/work_order_grid"
+        app:layout_constraintHorizontal_bias="0.5"
+        tools:layout_editor_absoluteY="25dp" />
+
+    <TextView
+        android:id="@+id/header_problem_code"
+        style="@style/h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_problem_code"
+        app:layout_constraintStart_toEndOf="@+id/header_device"
+        app:layout_constraintEnd_toStartOf="@id/header_customer_name"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome"
+        app:layout_constraintBottom_toTopOf="@id/work_order_grid"
+        app:layout_constraintHorizontal_bias="0.5"
+        tools:layout_editor_absoluteY="25dp" />
+
+    <TextView
+        android:id="@+id/header_customer_name"
+        style="@style/h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/customer_name"
+        app:layout_constraintStart_toEndOf="@+id/header_problem_code"
+        app:layout_constraintEnd_toStartOf="@id/header_processed"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome"
+        app:layout_constraintBottom_toTopOf="@id/work_order_grid"
+        app:layout_constraintHorizontal_bias="0.5"
+        tools:layout_editor_absoluteY="25dp" />
+
+    <TextView
+        android:id="@+id/header_processed"
+        style="@style/h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/header_processed"
+        android:textAlignment="viewEnd"
+        app:layout_constraintStart_toEndOf="@+id/header_customer_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_welcome"
+        app:layout_constraintBottom_toTopOf="@id/work_order_grid"
+        app:layout_constraintHorizontal_bias="0.5"
+        tools:layout_editor_absoluteY="25dp" />
+
 
 
     <GridView
@@ -35,6 +103,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_welcome" />
+        app:layout_constraintTop_toBottomOf="@+id/header_city" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

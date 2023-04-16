@@ -6,6 +6,8 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 @Entity(indices = {@Index(value = "user_name", unique = true)})
 public class User {
 
@@ -16,7 +18,7 @@ public class User {
     @ColumnInfo(name = "last_name")
     private String lastName;
     @ColumnInfo(name = "date_of_birth")
-    private String dateOfBirth;
+    private Date dateOfBirth;
     private String municipality;
     @ColumnInfo(name = "postal_code")
     private String postalCode;
@@ -53,11 +55,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

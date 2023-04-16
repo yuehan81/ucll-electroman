@@ -49,16 +49,13 @@
             app:layout_constraintTop_toBottomOf="@+id/first_name"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <EditText
+        <DatePicker
             android:id="@+id/date_of_birth"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:autofillHints="@string/prompt_date_of_birth"
-            android:hint="@string/prompt_date_of_birth"
-            android:inputType="date"
-            android:minHeight="48dp"
-            android:selectAllOnFocus="true"
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
             app:layout_constraintBottom_toTopOf="@+id/municipality"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintHorizontal_bias="0.0"
@@ -94,7 +91,7 @@
             android:layout_marginTop="5dp"
             android:autofillHints="@string/prompt_postal_code"
             android:hint="@string/prompt_postal_code"
-            android:inputType="textPostalAddress"
+            android:inputType="numberSigned"
             android:minHeight="48dp"
             android:selectAllOnFocus="true"
             app:layout_constraintBottom_toTopOf="@+id/street"
@@ -193,7 +190,7 @@
             android:inputType="textPassword"
             android:minHeight="48dp"
             android:selectAllOnFocus="true"
-            app:layout_constraintBottom_toTopOf="@+id/create_account2"
+            app:layout_constraintBottom_toTopOf="@+id/terms_and_conditions"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -201,6 +198,23 @@
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/register_username"
             app:layout_constraintVertical_chainStyle="packed" />
+
+        <CheckBox
+            android:id="@+id/terms_and_conditions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:text="@string/terms_and_conditions"
+            android:textAlignment="textStart"
+            app:layout_constraintBottom_toTopOf="@+id/create_account2"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/register_password" />
 
         <Button
             android:id="@+id/create_account2"
@@ -216,7 +230,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/register_password"
+            app:layout_constraintTop_toBottomOf="@id/terms_and_conditions"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView

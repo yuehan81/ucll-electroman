@@ -59,7 +59,9 @@
     <string name="menu_action_save">V Save</string>
     <string name="menu_action_cancel">X Cancel</string>
     <string name="detailed_problem_description_title">Detailed problem description</string>
-    <string name="repair_information_title">Repair information</string>
+    <string name="repair_information_title">Repair information (text is scrollable)</string>
+    <string name="repair_information_title_editable">Repair information</string>
+    <string name="hint_repair_information">Please enter here your repair information...</string>
     <string name="repair_information_save_error">Not Saved. No repair information was entered!</string>
     <string name="menu_action_reopen">Reopen</string>
     <string name="nav_open">Open</string>
@@ -68,5 +70,12 @@
     <string name="action_logout">Logout</string>
     <string name="username_exists_already">Username exists already!</string>
     <string name="username_and_password_cannot_be_blank">Username and password cannot be blank!</string>
+    <string name="terms_and_conditions_need_to_be_checked">The terms and conditions have to be checked!</string>
     <string name="prompt_new_work_order_problem_description">Problem Description</string>
+    <string name="terms_and_conditions">I agree to the terms and conditions</string>
+    <string name="header_city">City</string>
+    <string name="header_device">Device</string>
+    <string name="header_problem_code">Problem Code</string>
+    <string name="customer_name">Name</string>
+    <string name="header_processed">Processed</string>
 </resources>
