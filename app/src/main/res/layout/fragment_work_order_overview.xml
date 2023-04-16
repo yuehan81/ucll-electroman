@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/header_city"
         android:textAlignment="viewStart"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintBottom_toTopOf="@id/work_order_grid"
         app:layout_constraintEnd_toStartOf="@+id/header_device"
         app:layout_constraintHorizontal_bias="0.5"

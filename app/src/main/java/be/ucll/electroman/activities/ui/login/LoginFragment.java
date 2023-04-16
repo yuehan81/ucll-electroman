@@ -30,6 +30,7 @@ import be.ucll.electroman.models.User;
 
 public class LoginFragment extends Fragment {
 
+    private long lastClickTime = 0;
     private FragmentLoginBinding binding;
     private SharedDataViewModel sharedDataViewModel;
     private final int WAIT_TIME = 3000;
@@ -96,6 +97,11 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                // preventing multiple clicks, using threshold of 4000 ms
+                if (SystemClock.elapsedRealtime() - lastClickTime < 4000) {
+                    return;
+                }
+
                 String userName = binding.loginUsername.getText().toString();
                 User user = loginViewModel.findByUserName(userName);
                 if (loginViewModel.isUserFound(user)) {
@@ -122,13 +128,13 @@ public class LoginFragment extends Fragment {
 
                         Runnable background = () -> {
                             // This is the delay
-                            SystemClock.sleep( WAIT_TIME );
+                            SystemClock.sleep(WAIT_TIME);
                             // This will run on a background thread
                             System.out.println("Going to WorkOrderOverviewFragment");
-                            uiHandler.post( onUi );
+                            uiHandler.post(onUi);
                         };
 
-                        new Thread( background ).start();
+                        new Thread(background).start();
                     } else {
                         // password was not correct. show error
                         loginViewModel.setLoginIssue(true);
@@ -143,7 +149,7 @@ public class LoginFragment extends Fragment {
                 }
 
 
-
+                lastClickTime = SystemClock.elapsedRealtime();
 
             }
         };
@@ -156,12 +162,13 @@ public class LoginFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
     }
+
     @Override
     public void onStop() {
         super.onStop();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
     @Override
@@ -170,16 +177,13 @@ public class LoginFragment extends Fragment {
         binding = null;
     }
 
-        private void closeKeyboard()
-    {
+    private void closeKeyboard() {
         InputMethodManager manager = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             manager = (InputMethodManager) root.getContext().getSystemService(INPUT_METHOD_SERVICE);
         }
         manager.hideSoftInputFromWindow(root.getWindowToken(), 0);
     }
-
-
 
 
 }

@@ -124,7 +124,7 @@ public class CreateAccountFragment extends Fragment {
                     Log.i("CreateAccountFragment", user.getDateOfBirth().toString());
                     Log.i("CreateAccountFragment", mCreateAccountViewModel.findByUsername(user.getUsername()).getDateOfBirth().toString());
                     mCreateAccountViewModel.setCreateAccountError(false);
-                    actionBar.setDisplayShowTitleEnabled(true);
+                    actionBar.setDisplayShowTitleEnabled(false);
                     Navigation.findNavController(view).navigate(R.id.nav_login);
                 }
 
@@ -141,6 +141,9 @@ public class CreateAccountFragment extends Fragment {
             }
         });
 
+        // Set focus on First Name field
+        binding.firstName.setFocusable(true);
+        binding.firstName.requestFocus();
 
         return root;
     }
